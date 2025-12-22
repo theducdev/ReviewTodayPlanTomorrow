@@ -1,0 +1,25 @@
+services:
+  - type: web
+    name: review-plan-backend
+    env: node
+    buildCommand: cd backend && npm install
+    startCommand: cd backend && npm start
+    envVars:
+      - key: MONGO_URI
+        value: mongodb://theduc_shopsince:cc206cf461986bb862c32a606c575476bec28dd4@kwqnk2.h.filess.io:27018/theduc_shopsince
+      - key: JWT_SECRET
+        value: secret_key_change_me_in_production
+      - key: PORT
+        value: 10000
+
+  - type: static
+    name: review-plan-frontend
+    env: static
+    buildCommand: cd frontend && npm install && npm run build
+    publishDir: frontend/dist
+    envVars:
+      - key: VITE_API_URL
+        fromService:
+          type: web
+          name: review-plan-backend
+          property: url
