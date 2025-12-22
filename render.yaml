@@ -19,7 +19,4 @@ services:
     staticPublishPath: frontend/dist
     envVars:
       - key: VITE_API_URL
-        fromService:
-          type: web
-          name: review-plan-backend
-          property: url
+        value: https://review-plan-backend.onrender.com
