@@ -12,11 +12,11 @@ services:
       - key: PORT
         value: 10000
 
-  - type: static
+  - type: web
     name: review-plan-frontend
     env: static
     buildCommand: cd frontend && npm install && npm run build
-    publishDir: frontend/dist
+    staticPublishPath: frontend/dist
     envVars:
       - key: VITE_API_URL
         fromService:
