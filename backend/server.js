@@ -23,17 +23,13 @@ mongoose.connect(MONGO_URI)
 const authRoutes = require('./routes/auth');
 const apiRoutes = require('./routes/api');
 
-app.use('/api/auth', authRoutes);
+app.use('/auth', authRoutes);
 app.use('/api', apiRoutes);
 
 app.get('/', (req, res) => {
     res.send('API is running...');
 });
 
-if (process.env.NODE_ENV !== 'production') {
-    app.listen(PORT, () => {
-        console.log(`Server running on port ${PORT}`);
-    });
-}
-
-module.exports = app;
+app.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`);
+});
