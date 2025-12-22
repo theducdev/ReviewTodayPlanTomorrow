@@ -6,7 +6,7 @@ const Meditation = require('../models/Meditation');
 const Reading = require('../models/Reading');
 const Plan = require('../models/Plan');
 
-const JWT_SECRET = 'your_jwt_secret_key_here';
+const JWT_SECRET = process.env.JWT_SECRET || 'your_jwt_secret_key_here';
 
 // Middleware to verify token
 const verifyToken = (req, res, next) => {
