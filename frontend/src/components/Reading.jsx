@@ -25,14 +25,11 @@ const Reading = () => {
     const handleSave = async () => {
         setIsActive(false);
         try {
-            const token = localStorage.getItem('token');
             const date = new Date().toISOString().split('T')[0];
             await api.post('/api/reading', {
                 date,
                 duration: seconds,
                 notes
-            }, {
-                headers: { Authorization: token }
             });
             setMessage('Reading session saved!');
             setSeconds(0);

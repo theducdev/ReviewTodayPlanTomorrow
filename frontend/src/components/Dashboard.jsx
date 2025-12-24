@@ -16,10 +16,7 @@ const Dashboard = () => {
 
     const fetchData = async () => {
         try {
-            const token = localStorage.getItem('token');
-            const res = await api.get('/api/dashboard', {
-                headers: { Authorization: token }
-            });
+            const res = await api.get('/api/dashboard');
             setData(res.data);
             setLoading(false);
         } catch (err) {

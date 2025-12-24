@@ -16,10 +16,7 @@ const Reflection = () => {
 
     const fetchHistory = async () => {
         try {
-            const token = localStorage.getItem('token');
-            const res = await api.get('/api/reflection', {
-                headers: { Authorization: token }
-            });
+            const res = await api.get('/api/reflection');
             setHistory(res.data);
         } catch (err) {
             console.error(err);
@@ -29,13 +26,10 @@ const Reflection = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            const token = localStorage.getItem('token');
             const date = new Date().toISOString().split('T')[0];
             await api.post('/api/reflection', {
                 ...formData,
                 date
-            }, {
-                headers: { Authorization: token }
             });
             setMessage('Reflection saved successfully!');
             setFormData({ bestThing: '', worstThing: '', improvement: '' });

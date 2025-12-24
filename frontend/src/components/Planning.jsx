@@ -17,10 +17,7 @@ const Planning = () => {
 
     const fetchPlans = async () => {
         try {
-            const token = localStorage.getItem('token');
-            const res = await api.get('/api/plan', {
-                headers: { Authorization: token }
-            });
+            const res = await api.get('/api/plan');
             setPlans(res.data);
         } catch (err) {
             console.error(err);
@@ -36,18 +33,9 @@ const Planning = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            const token = localStorage.getItem('token');
-            // Calculate tomorrow's date
-            const today = new Date();
-            const tomorrow = new Date(today);
-            tomorrow.setDate(tomorrow.getDate() + 1);
-            const dateStr = tomorrow.toISOString().split('T')[0];
-
             await api.post('/api/plan', {
                 date: dateStr,
                 tasks
-            }, {
-                headers: { Authorization: token }
             });
             setMessage('Plan for tomorrow saved!');
             fetchPlans();

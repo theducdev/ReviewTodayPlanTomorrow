@@ -35,13 +35,10 @@ const Meditation = () => {
 
     const saveSession = async () => {
         try {
-            const token = localStorage.getItem('token');
             const date = new Date().toISOString().split('T')[0];
             await api.post('/api/meditation', {
                 date,
                 duration: duration * 60
-            }, {
-                headers: { Authorization: token }
             });
             setMessage('Session completed and saved!');
             // Play a sound here if needed
