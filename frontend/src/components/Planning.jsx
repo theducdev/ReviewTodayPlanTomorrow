@@ -4,8 +4,6 @@ import { Plus, Save, Trash2 } from 'lucide-react';
 
 const Planning = () => {
     const [tasks, setTasks] = useState([
-        { name: '', output: '', location: '', time: '', steps: '' },
-        { name: '', output: '', location: '', time: '', steps: '' },
         { name: '', output: '', location: '', time: '', steps: '' }
     ]);
     const [message, setMessage] = useState('');
@@ -30,9 +28,27 @@ const Planning = () => {
         setTasks(newTasks);
     };
 
+    const addTask = () => {
+        setTasks([...tasks, { name: '', output: '', location: '', time: '', steps: '' }]);
+    };
+
+    const removeTask = (index) => {
+        if (tasks.length > 1) {
+            const newTasks = tasks.filter((_, i) => i !== index);
+            setTasks(newTasks);
+        }
+    };
+
     const handleSubmit = async (e) => {
         e.preventDefault();
+        setMessage('');
         try {
+            // Calculate tomorrow's date
+            const today = new Date();
+            const tomorrow = new Date(today);
+            tomorrow.setDate(tomorrow.getDate() + 1);
+            const dateStr = tomorrow.toISOString().split('T')[0];
+
             await api.post('/api/plan', {
                 date: dateStr,
                 tasks
@@ -40,7 +56,8 @@ const Planning = () => {
             setMessage('Plan for tomorrow saved!');
             fetchPlans();
         } catch (err) {
-            setMessage('Error saving plan.');
+            console.error(err);
+            setMessage(err.response?.data?.message || 'Error saving plan.');
         }
     };
 
@@ -49,10 +66,21 @@ const Planning = () => {
             <h2 className="text-3xl font-bold mb-6 text-blue-400">Plan for Tomorrow</h2>
 
             <form onSubmit={handleSubmit} className="mb-12">
-                <div className="grid lg:grid-cols-3 gap-6">
+                <div className="grid lg:grid-cols-3 gap-6 mb-6">
                     {tasks.map((task, index) => (
-                        <div key={index} className="bg-slate-800 p-6 rounded-xl shadow-lg border border-slate-700">
-                            <h3 className="text-xl font-bold mb-4 text-blue-300">Task {index + 1}</h3>
+                        <div key={index} className="bg-slate-800 p-6 rounded-xl shadow-lg border border-slate-700 relative group">
+                            <div className="flex justify-between items-center mb-4">
+                                <h3 className="text-xl font-bold text-blue-300">Task {index + 1}</h3>
+                                {tasks.length > 1 && (
+                                    <button
+                                        type="button"
+                                        onClick={() => removeTask(index)}
+                                        className="text-red-400 hover:text-red-300 transition-colors"
+                                    >
+                                        <Trash2 size={20} />
+                                    </button>
+                                )}
+                            </div>
                             <div className="space-y-3">
                                 <input
                                     placeholder="Task Name"
@@ -95,10 +123,25 @@ const Planning = () => {
                         </div>
                     ))}
                 </div>
-                <button type="submit" className="mt-8 w-full bg-blue-600 hover:bg-blue-700 py-4 rounded-lg font-bold text-xl shadow-lg transition-transform hover:scale-[1.01]">
-                    Save Plan
-                </button>
-                {message && <p className="text-center mt-4 text-green-400 text-lg">{message}</p>}
+
+                <div className="flex space-x-4">
+                    <button
+                        type="button"
+                        onClick={addTask}
+                        className="flex-1 bg-slate-700 hover:bg-slate-600 py-4 rounded-lg font-bold text-xl flex items-center justify-center space-x-2 transition-colors"
+                    >
+                        <Plus size={24} />
+                        <span>Add Task</span>
+                    </button>
+                    <button
+                        type="submit"
+                        className="flex-1 bg-blue-600 hover:bg-blue-700 py-4 rounded-lg font-bold text-xl shadow-lg transition-transform hover:scale-[1.01] flex items-center justify-center space-x-2"
+                    >
+                        <Save size={24} />
+                        <span>Save Plan</span>
+                    </button>
+                </div>
+                {message && <p className={`text-center mt-4 text-lg ${message.includes('Error') ? 'text-red-400' : 'text-green-400'}`}>{message}</p>}
             </form>
 
             <div className="space-y-6">
